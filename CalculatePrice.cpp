@@ -96,9 +96,9 @@ string calc(string date)
   time_t zeit = mktime(&tm);
 
   struct tm day;
-  strptime("1970-01-01", "%Y-%m-%d", &day);
+  strptime("1970-01-02 00:00:00+00", "%Y-%m-%d %H:%M:%S", &day);
   time_t dayzeit = mktime(&day);
-  cout<<dayzeit<<endl;
+  //cout<<dayzeit<<endl;
   for(int x=0; x<30; x++)
   {
 
