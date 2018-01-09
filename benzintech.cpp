@@ -48,22 +48,20 @@ int main(int argc, char* argv[]) {
      int n;
 
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0)
-        error("ERROR opening socket");
+     if (sockfd < 0) error("ERROR opening socket");
+     
      bzero((char *) &serv_addr, sizeof(serv_addr));
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(8080);
-     if (bind(sockfd, (struct sockaddr *) &serv_addr,
-              sizeof(serv_addr)) < 0)
-              error("ERROR on binding");
+     int b = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+     if (b < 0) error("ERROR on binding");
+
      listen(sockfd,5);
      clilen = sizeof(cli_addr);
      while(1)
      {
-       newsockfd = accept(sockfd,
-                   (struct sockaddr *) &cli_addr,
-                   &clilen);
+       newsockfd = accept(sockfd,(struct sockaddr *) &cli_addr, &clilen);
        if (newsockfd < 0)
             error("ERROR on accept");
        bzero(buffer,256);
@@ -72,6 +70,7 @@ int main(int argc, char* argv[]) {
 
       string income = buffer;
       calcRoute(income);
+      income = "ready "+income;
 
       n = write(newsockfd,income.c_str(),income.length());
        if (n < 0) error("ERROR writing to socket");
