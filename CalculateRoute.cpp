@@ -104,7 +104,7 @@ void CalculateRoute::save()
     for(int x=0; x<lengthListStation; x++)
     {
       string lineh = line[x]+";"+to_string(allStation[listStation[x]-1]->getPreisatTime(0))+";"+to_string(toRefuel[x])+"\n";
-      cout<<lineh<<endl;
+    //  cout<<lineh<<endl;
       dat<<lineh;
 
     }

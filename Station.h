@@ -25,6 +25,9 @@ class Station
     double latitude;    //achtung fehler durch Rundung
     double longitude;   //achtung fehler durch Rundung
 
+    bool firstPreisAtTime;
+    int* preis;
+    int* date;
     int getPreisatTime(int time);
 
 

@@ -87,7 +87,10 @@ GasPrice::GasPrice(string data, int id)
     {
       if(day[date + y])
       {
-        dat<< day[date + y]<<";\n";
+        int mon =(9+((21+y)/31));
+        int d = ((21+y+1)%31);
+        if(d == 0)d = 30;
+        dat<<"2017-"<<mon<<"-"<<d<<" 00:00:00+00;"<< day[date + y]<<";\n";
       }
       else end++;
     }
