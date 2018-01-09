@@ -39,8 +39,7 @@ int main(int argc, char* argv[]) {
 
   init();
 
-//calcRoute("Bertha Benz Memorial Route.csv");
-cout<<"Bertha"<<endl;
+
 
   int sockfd, newsockfd, portno;
      socklen_t clilen;
@@ -70,19 +69,17 @@ cout<<"Bertha"<<endl;
        bzero(buffer,256);
        n = read(newsockfd,buffer,256);
        if (n < 0) error("ERROR reading from socket");
-      // printf("Here is the message: %s\n",buffer);
+
       string income = buffer;
-      cout<<income<<endl;
       calcRoute(income);
-      // n = write(newsockfd,"I got your message",18);
+
       n = write(newsockfd,income.c_str(),income.length());
        if (n < 0) error("ERROR writing to socket");
        close(newsockfd);
      }
      close(sockfd);
 
-  //calcRoute(buffer);
-  //calcRoute("Bertha Benz Memorial Route.csv");
+
 
 
 
