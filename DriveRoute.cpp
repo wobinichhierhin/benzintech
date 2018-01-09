@@ -14,7 +14,7 @@ DriveRoute::DriveRoute(string data)
   length--; //wegen der ersten zeile, die kein inhalt hat
 
   listOfStation = new int[length];
-  arriavelAtTime = new int[length];
+  arriavelAtTime = new time_t[length];
   oneLine = new string[length];
 
 
@@ -43,7 +43,11 @@ DriveRoute::DriveRoute(string data)
           else id += line[y];
         }
         listOfStation[counter] =atoi( id.c_str() );
-        arriavelAtTime[counter] =0;
+
+        struct tm tm;
+        strptime(avTime.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
+
+        arriavelAtTime[counter] = mktime(&tm);
 
         oneLine[counter]=line;
 

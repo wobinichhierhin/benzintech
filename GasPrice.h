@@ -10,17 +10,21 @@ class GasPrice
 {
   private:
     int id;
+    string data;
     int length;
     int* price;
     time_t* zeit;
+
     int* day;
 
-    int* dayFuture;
+
 
   public:
 
-    GasPrice(string data, int id);
+    GasPrice( int id);
     ~GasPrice();
+
+    int getPreis(time_t t);
 
 
   };

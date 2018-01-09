@@ -17,6 +17,7 @@ CalculateRoute::CalculateRoute(Station** allStation, DriveRoute* route,  string 
   this->route = route;
 
   listStation = this->route->listOfStation;
+  listOfTime = this->route->arriavelAtTime;
   lengthListStation = this->route->length;
 
   orderList = new int[route->length-1];
@@ -48,6 +49,7 @@ CalculateRoute::~CalculateRoute()
 {
   delete[] listStation;
   delete[] orderList;
+  delete[] listOfTime;
 }
 
 
@@ -58,7 +60,7 @@ void CalculateRoute::calculate(int von, int to)
     int min = von;
     for(int x=min+1; x<=to;x++)
     {
-      if(allStation[listStation[x]-1]->getPreisatTime(0) < allStation[listStation[min]-1]->getPreisatTime(0))
+      if(allStation[listStation[x]-1]->getPreisatTime(listOfTime[x]-1) < allStation[listStation[min]-1]->getPreisatTime(listOfTime[x]-1))
       {
         min = x;
       }
@@ -103,7 +105,7 @@ void CalculateRoute::save()
     dat.open(out.c_str(), ios::out);
     for(int x=0; x<lengthListStation; x++)
     {
-      string lineh = line[x]+";"+to_string(allStation[listStation[x]-1]->getPreisatTime(0))+";"+to_string(toRefuel[x])+"\n";
+      string lineh = line[x]+";"+to_string(allStation[listStation[x]-1]->getPreisatTime(listOfTime[x]-1))+";"+to_string(toRefuel[x])+"\n";
     //  cout<<lineh<<endl;
       dat<<lineh;
 

@@ -16,7 +16,7 @@ class DriveRoute
     ~DriveRoute();
 
     int* listOfStation;
-    int* arriavelAtTime; // implementierung fehlt
+    time_t* arriavelAtTime; // implementierung fehlt
     int length;
     string* oneLine;
 

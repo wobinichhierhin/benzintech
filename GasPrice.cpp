@@ -6,28 +6,49 @@
 using namespace std;
 
 
-GasPrice::GasPrice(string data, int id)
+GasPrice::GasPrice( int id)
 {
   this->id = id;
-  length = 0;
-  int x=0;
-  while(data[x])
+  length=0;
+  data="";
+
+  string link="Eingabedaten/Benzinpreise/";
+  string zahl="";
+  int x2=id;
+  do
   {
-    if(data[x]=='\n')length++;
-    x++;
+    zahl=(char)((x2%10)+48)+zahl;
+    x2/=10;
+  }while(x2);
+  link+=zahl+".csv";
+
+  fstream datei;
+  datei.open(link.c_str(), ios::in);
+  if(datei.good())
+  {
+    while (!datei.eof())
+    {
+      string dataLine;
+      getline(datei, dataLine);
+      if(dataLine != "")
+      {
+        data += dataLine +"\n";
+        length++;
+      }
+    }
   }
+
   price = new int[length];
   zeit = new time_t[length];
   day = new int[12*31];
       for(int x=0; x<(12*31);x++)day[x]=0;
 
+  int x=0;
   int counter=0;
-  x=0;
   string line="";
-
   while(data[x])
   {
-    if(data[x] != '\n')line += data[x];
+    if(data[x] != '\n')line +=data[x];
     else
     {
       line += ';';
@@ -52,57 +73,48 @@ GasPrice::GasPrice(string data, int id)
       zeit[counter] = mktime(&tm);
 
       string m = "";
-      m += lineTime[5];
-      m += lineTime[6];
-      string d = "";
-      d += lineTime[8];
-      d += lineTime[9];
-      int mont = atoi(m.c_str())-1;
-      int dayH = atoi(d.c_str())-1;
+    m += lineTime[5];
+    m += lineTime[6];
+    string d = "";
+    d += lineTime[8];
+    d += lineTime[9];
+    int mont = atoi(m.c_str())-1;
+    int dayH = atoi(d.c_str())-1;
 
-      day[(mont*31)+dayH] += atoi(linePrice.c_str());
-      day[(mont*31)+dayH] /= 2;
+    day[(mont*31)+dayH] += atoi(linePrice.c_str());
+    day[(mont*31)+dayH] /= 2;
 
-      line = "";
+    line = "";
+
       counter++;
     }
+
     x++;
   }
 
-  string zahl="";
-  int x2=id;
-  do
-  {
-    zahl=(char)((x2%10)+48)+zahl;
-    x2/=10;
-  }while(x2);
-  string link = "Ausgabedaten/"+zahl+".csv";
-
-  fstream dat;
-  dat.open(link.c_str(), ios::out);
-    dayFuture = new int[30];
-    int date = ((9*31)+21)-30;
-    int end = 30;
-    for(int y=0; y<end; y++)
-    {
-      if(day[date + y])
-      {
-        int mon =(9+((21+y)/31));
-        int d = ((21+y+1)%31);
-        if(d == 0)d = 30;
-        dat<<"2017-"<<mon<<"-"<<d<<" 00:00:00+00;"<< day[date + y]<<";\n";
-      }
-      else end++;
-    }
-  dat.close();
-
+  datei.close();
 }
 
 GasPrice::~GasPrice()
 {
+  delete[] zeit;
   delete[] price;
   delete[] day;
-  delete[] zeit;
-  delete[] dayFuture;
+}
 
+int GasPrice::getPreis(time_t t)
+{
+  if(t < zeit[0] || t > zeit[length-1])
+  {
+    cout<<"t"<<endl;
+    struct tm *tm = localtime(&t);
+    int h = (tm->tm_mon*31)+tm->tm_wday;
+    return day[h];
+  }
+
+    for(int x=0; x<length; x++)
+    {
+      if(zeit[x] > t)return price[x-1];
+    }
+    return price[length-1];
 }

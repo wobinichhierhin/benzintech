@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include "GasPrice.h"
 
 #ifndef Station_h
 #define Station_h
@@ -26,9 +27,9 @@ class Station
     double longitude;   //achtung fehler durch Rundung
 
     bool firstPreisAtTime;
-    int* preis;
-    int* date;
-    int getPreisatTime(int time);
+    GasPrice* preis;
+
+    int getPreisatTime(time_t time);
 
 
 

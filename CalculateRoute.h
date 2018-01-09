@@ -18,6 +18,7 @@ class CalculateRoute
     DriveRoute* route;
 
     int* listStation;
+    time_t* listOfTime;
     int lengthListStation;
 
     int* orderList;
