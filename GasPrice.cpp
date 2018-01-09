@@ -106,7 +106,6 @@ int GasPrice::getPreis(time_t t)
 {
   if(t < zeit[0] || t > zeit[length-1])
   {
-    cout<<"t"<<endl;
     struct tm *tm = localtime(&t);
     int h = (tm->tm_mon*31)+tm->tm_wday;
     return day[h];
