@@ -27,7 +27,7 @@ void init();
 void readAllStation();
 DriveRoute* readDriveRoute(string route);
 
-void calcRoute(string linkName);
+int calcRoute(string linkName);
 
 void error(const char *msg)
 {
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0) error("ERROR opening socket");
-     
+
      bzero((char *) &serv_addr, sizeof(serv_addr));
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
@@ -69,8 +69,8 @@ int main(int argc, char* argv[]) {
        if (n < 0) error("ERROR reading from socket");
 
       string income = buffer;
-      calcRoute(income);
-      income = "ready "+income;
+      if(calcRoute(income) == -1) income = "error file";
+      else income = "ready "+income;
 
       n = write(newsockfd,income.c_str(),income.length());
        if (n < 0) error("ERROR writing to socket");
@@ -91,12 +91,12 @@ void init()
   readAllStation();
 }
 
-void calcRoute(string linkName)
+int calcRoute(string linkName)
 {
   DriveRoute* route = readDriveRoute(linkName);
-
+  if(route == NULL) return -1;
   CalculateRoute* calc= new CalculateRoute(allStation, route, linkName);
-
+  return 1;
 }
 
 DriveRoute* readDriveRoute(string route)
@@ -117,6 +117,7 @@ DriveRoute* readDriveRoute(string route)
       }
     }
   }
+  else return NULL;
   dataIn.close();
 
   DriveRoute* a = new DriveRoute(data);
