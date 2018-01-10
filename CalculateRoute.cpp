@@ -50,6 +50,9 @@ CalculateRoute::~CalculateRoute()
   delete[] listStation;
   delete[] orderList;
   delete[] listOfTime;
+
+  delete[]price;
+  delete[]timeStation;
 }
 
 
@@ -94,6 +97,42 @@ double CalculateRoute::distance(Station* a, Station* b)
 double* CalculateRoute::getToReful()
 {
   return toRefuel;
+}
+
+string* CalculateRoute::getTime()
+{
+  timeStation =new string[lengthListStation];
+  for(int x=0; x<lengthListStation; x++)
+  {
+    char buffer [80];
+    struct tm* h;
+    h = localtime(&listOfTime[x]);
+    strftime(buffer,80,"%Y-%m-%d %H:%M:%S",h);
+    timeStation[x]=buffer;
+
+  }
+  return timeStation;
+}
+
+int* CalculateRoute::getListStation()
+{
+  return listStation;
+}
+
+int* CalculateRoute::getPice()
+{
+  price = new int[lengthListStation];
+  for(int x=0; x<lengthListStation; x++)
+  {
+    price[x] = allStation[listStation[x]-1]->getPreisatTime(listOfTime[x]-1);
+  }
+
+  return price;
+}
+
+int CalculateRoute::getLength()
+{
+  return lengthListStation;
 }
 
 

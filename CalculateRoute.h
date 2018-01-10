@@ -24,6 +24,9 @@ class CalculateRoute
     int* orderList;
     double* toRefuel;
 
+    int* price;
+    string* timeStation;
+
     void calculate(int von, int to);
 
     double distanceVonAToB(int a, int b);
@@ -37,6 +40,10 @@ class CalculateRoute
     ~CalculateRoute();
 
     double* getToReful();
+    string* getTime();
+    int* getListStation();
+    int* getPice();
+    int getLength();
 
 
   };
