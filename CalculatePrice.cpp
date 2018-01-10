@@ -16,7 +16,7 @@
 using namespace std;
 
 
-
+string getAll(string date);
 string calc(string date);
 string toString(int a);
 
@@ -58,15 +58,57 @@ int main(int argc, char* argv[]) {
 
       string income = buffer;
 
-      income = calc(income);
-
-      n = write(newsockfd,income.c_str(),income.length());
+      string out="";
+      out = getAll(income);
+      out+="\n";
+      out += calc(income);
+      //cout<<out<<endl;
+      n = write(newsockfd,out.c_str(),out.length());
        if (n < 0) error("ERROR writing to socket");
        close(newsockfd);
      }
      close(sockfd);
 
 return 0;
+}
+
+string getAll(string date)
+{
+  string sid="";
+  string stime="";
+  bool flag=1;
+  for(int x=0; x<date.length();x++)
+  {
+    if(date[x]!=';')
+    {
+      if(flag)sid += date[x];
+      else stime += date[x];
+    }
+    else flag=0;
+  }
+
+  int id =atoi( sid.c_str() );
+  if( id < 1 || id > 15226) return "error id not exist";
+
+  string datareturn="";
+
+  GasPrice* a = new GasPrice(id);
+
+  int* p = a->getAllPreis();
+  time_t* t = a->getAllTime();
+
+  for(int x=0; x< a->getLength();x++)
+  {
+    char buffer [80];
+    struct tm* h;
+    h = localtime(&t[x]);
+    strftime(buffer,80,"%Y-%m-%d %H:%M:%S",h);
+
+    string szeit = buffer;
+    datareturn +=  szeit+";"+toString(p[x])+"\n";
+  }
+
+  return datareturn;
 }
 
 string calc(string date)
@@ -85,7 +127,7 @@ string calc(string date)
   }
 
   int id =atoi( sid.c_str() );
-  if( id < 1 || id > 15226) return "error id";
+  if( id < 1 || id > 15226) return "error id not exist";
 
   GasPrice* a = new GasPrice(id);
 

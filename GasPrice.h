@@ -25,6 +25,9 @@ class GasPrice
     ~GasPrice();
 
     int getPreis(time_t t);
+    int*getAllPreis();
+    time_t* getAllTime();
+    int getLength();
 
 
   };

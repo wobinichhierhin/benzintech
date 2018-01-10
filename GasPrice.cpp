@@ -117,3 +117,17 @@ int GasPrice::getPreis(time_t t)
     }
     return price[length-1];
 }
+
+
+int* GasPrice::getAllPreis()
+{
+  return price;
+}
+time_t* GasPrice::getAllTime()
+{
+  return zeit;
+}
+int GasPrice::getLength()
+{
+  return length;
+}
