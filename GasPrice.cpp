@@ -93,6 +93,26 @@ GasPrice::GasPrice( int id)
   }
 
   datei.close();
+
+  for(int x=0; x<(12*31);x++)
+  {
+    if(day[x])
+    {
+      if((day[x]%10)>4)
+      {
+        day[x]/=10;
+        day[x]*=10;
+        day[x]+=9;
+      }
+      else
+      {
+        day[x]/=10;
+        day[x]--;
+        day[x]*=10;
+        day[x]+=9;
+      }
+    }
+  }
 }
 
 GasPrice::~GasPrice()
