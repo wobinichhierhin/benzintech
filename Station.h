@@ -13,10 +13,10 @@ class Station
 
   public:
 
-    Station(string data);
+    Station(string data);// data = eine zeile aus der Tankstellen.csv
     ~Station();
 
-    int id;
+    int id;// id der tankstelle
     string name;
     string marke;
     string street;
@@ -26,9 +26,14 @@ class Station
     double latitude;    //achtung fehler durch Rundung
     double longitude;   //achtung fehler durch Rundung
 
-    bool firstPreisAtTime;
+    bool firstPreisAtTime; // variable für die einmalige initialisierung des preis
     GasPrice* preis;
 
+    /*
+    ruft von GasPrice getPreis(time_t t) auf und gibt den Preis zu einem Zeitpunk X zurück
+    wird die funktion zum ersten mal aufgerufen, dann wird der preis initialiesiert.
+    Danach wird einfach nur noch die Funktion getPreis(time_t t) aufgerufen
+    */
     int getPreisatTime(time_t time);
 
 
