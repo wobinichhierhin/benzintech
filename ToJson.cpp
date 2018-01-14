@@ -21,7 +21,7 @@ string ToJson::toJsonFromPrice(string* t, int* p)
 
     string erg="";
     erg="{\n";
-    erg+="\"Laenge: 30\n";
+    erg+="\"Laenge\": 30\n";
 
     erg+="\"Time\": [";
     erg+="\""+t[0]+"\"";
