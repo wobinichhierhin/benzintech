@@ -21,7 +21,7 @@ string ToJson::toJsonFromPrice(string* t, int* p)
 
     string erg="";
     erg="{\n";
-    erg+="\"Laenge\": 30\n";
+    erg+="\"Laenge\": 30,\n";
 
     erg+="\"Time\": [";
     erg+="\""+t[0]+"\"";
@@ -47,7 +47,7 @@ string ToJson::toJsonFromRoute(string* t, int* id, int* p, double* l, int length
 {
   string erg="";
   erg="{\n";
-  erg+="\"Laenge\": " +to_string(length)+"\n";
+  erg+="\"Laenge\": " +to_string(length)+",\n";
 
   erg+="\"Time\": [";
   erg+="\""+t[0]+"\"";
