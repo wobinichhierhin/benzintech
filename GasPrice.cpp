@@ -9,9 +9,12 @@ using namespace std;
 GasPrice::GasPrice( int id)
 {
   this->id = id;
+  bool boolgood = 1;//
   length=0;
   data="";
 
+  while(boolgood)//
+  {//
   string link="Eingabedaten/Benzinpreise/";
   string zahl="";
   int x2=id;
@@ -21,6 +24,7 @@ GasPrice::GasPrice( int id)
     x2/=10;
   }while(x2);
   link+=zahl+".csv";
+
 
   fstream datei;
   datei.open(link.c_str(), ios::in);
@@ -36,63 +40,69 @@ GasPrice::GasPrice( int id)
         length++;
       }
     }
+    boolgood = 0;
   }
+  else id++;
 
-  price = new int[length];
-  zeit = new time_t[length];
-  day = new int[12*31];
-      for(int x=0; x<(12*31);x++)day[x]=0;
+  if(!boolgood)//
+  {//
+    price = new int[length];
+    zeit = new time_t[length];
+    day = new int[12*31];
+        for(int x=0; x<(12*31);x++)day[x]=0;
 
-  int x=0;
-  int counter=0;
-  string line="";
-  while(data[x])
-  {
-    if(data[x] != '\n')line +=data[x];
-    else
+    int x=0;
+    int counter=0;
+    string line="";
+    while(data[x])
     {
-      line += ';';
-      string linePrice="";
-      string lineTime="";
-      int z=0;
-      while(line[z]!=';')
+      if(data[x] != '\n')line +=data[x];
+      else
       {
-        lineTime += line[z];
+        line += ';';
+        string linePrice="";
+        string lineTime="";
+        int z=0;
+        while(line[z]!=';')
+        {
+          lineTime += line[z];
+          z++;
+        }
         z++;
+        while(line[z]!=';')
+        {
+          linePrice += line[z];
+          z++;
+        }
+
+        price[counter] = atoi(linePrice.c_str());
+        struct tm tm;
+        strptime(lineTime.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
+        zeit[counter] = mktime(&tm);
+
+        string m = "";
+      m += lineTime[5];
+      m += lineTime[6];
+      string d = "";
+      d += lineTime[8];
+      d += lineTime[9];
+      int mont = atoi(m.c_str())-1;
+      int dayH = atoi(d.c_str())-1;
+
+      day[(mont*31)+dayH] += atoi(linePrice.c_str());
+      day[(mont*31)+dayH] /= 2;
+
+      line = "";
+
+        counter++;
       }
-      z++;
-      while(line[z]!=';')
-      {
-        linePrice += line[z];
-        z++;
-      }
 
-      price[counter] = atoi(linePrice.c_str());
-      struct tm tm;
-      strptime(lineTime.c_str(), "%Y-%m-%d %H:%M:%S", &tm);
-      zeit[counter] = mktime(&tm);
-
-      string m = "";
-    m += lineTime[5];
-    m += lineTime[6];
-    string d = "";
-    d += lineTime[8];
-    d += lineTime[9];
-    int mont = atoi(m.c_str())-1;
-    int dayH = atoi(d.c_str())-1;
-
-    day[(mont*31)+dayH] += atoi(linePrice.c_str());
-    day[(mont*31)+dayH] /= 2;
-
-    line = "";
-
-      counter++;
+      x++;
     }
-
-    x++;
-  }
+  }//
 
   datei.close();
+}//
 
   for(int x=0; x<(12*31);x++)
   {
