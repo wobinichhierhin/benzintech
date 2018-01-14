@@ -240,7 +240,7 @@ string calc(string date)
   time_t zeit = mktime(&tm);
 
   struct tm day;
-  strptime("1970-01-02 00:00:00+00", "%Y-%m-%d %H:%M:%S", &day);
+  strptime("1970-01-02 01:00:00+00", "%Y-%m-%d %H:%M:%S", &day);
   time_t dayzeit = mktime(&day);
 
   string t[30];
