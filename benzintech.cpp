@@ -50,13 +50,13 @@ void error(const char *msg)
 }
 
 int main(int argc, char* argv[]) {
-
+/*
    if (argc < 2)
    {
      cout<<"missing port number"<<endl;
      exit(1);
    }
-
+*/
   init();
 
 
@@ -72,7 +72,8 @@ int main(int argc, char* argv[]) {
      bzero((char *) &serv_addr, sizeof(serv_addr));
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(atoi(argv[1]));
+     //serv_addr.sin_port = htons(atoi(argv[1]));
+     serv_addr.sin_port = htons(8080);
      int b = bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
      if (b < 0) errorabruch("ERROR on binding");
 
