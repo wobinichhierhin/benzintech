@@ -155,10 +155,15 @@ def route():
     print(request.form)
     dataarray = {}
     if request.method == 'POST' and "submit_route" in request.form:
+
         db_session = DBSession()
         routenname_data = db_session.query(Routen).filter_by(RoutenID=request.form["routenauswahl"]).first()
         print(routenname_data)
         dataarray["routenname"] = routenname_data.RoutenName
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect(('127.0.0.1', 8080))
+            s.sendall(str("route " + str(routenname_data.RoutenName)+str(".csv")).encode())
+
         print(dataarray["routenname"])
         print("Hole Routendaten")
         data = db_session.query(Routendaten).filter_by(RoutenID=request.form["routenauswahl"]).order_by(Routendaten.Zeitpunkt.asc()).all()
@@ -224,12 +229,12 @@ def route():
         #print(week_dict)
 
         #for i in range(7):
-            
+
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(('127.0.0.1', 8080))
             s.sendall(str("price " + str(request.form["tankid"]) + ";" + str(request.form["date"]) + " 00:00:00+00").encode())
-            data = s.recv(1024)
+            data = s.recv(4096)
         data_json = json.loads(data.decode("ascii"))
         data_x = data_json["Time"]
         data_y = data_json["Preis"]
@@ -275,5 +280,3 @@ if __name__ == '__main__':
     app.secret_key = os.urandom(24)
 
     app.run(host="0.0.0.0", port=80)
-
-
