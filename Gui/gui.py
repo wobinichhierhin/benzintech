@@ -163,7 +163,7 @@ def route():
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(('127.0.0.1', 8080))
             s.sendall(str("route " + str(routenname_data.RoutenName)+str(".csv")).encode())
-
+            data = s.recv(4096)
         print(dataarray["routenname"])
         print("Hole Routendaten")
         data = db_session.query(Routendaten).filter_by(RoutenID=request.form["routenauswahl"]).order_by(Routendaten.Zeitpunkt.asc()).all()
