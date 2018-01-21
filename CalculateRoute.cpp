@@ -150,4 +150,15 @@ void CalculateRoute::save()
 
     }
     dat.close();
+
+    out = "/Gui/data/routes/"+linkName;
+    dat.open(out.c_str(), ios::out);
+    for(int x=0; x<lengthListStation; x++)
+    {
+      string lineh = line[x]+";"+to_string(allStation[listStation[x]-1]->getPreisatTime(listOfTime[x]-1))+";"+to_string(toRefuel[x])+"\n";
+    //  cout<<lineh<<endl;
+      dat<<lineh;
+
+    }
+    dat.close();
 }
