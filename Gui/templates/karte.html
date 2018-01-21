@@ -1,0 +1,126 @@
+<!doctype html>
+<title>Propra</title>
+<script type=text/javascript> $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};</script>
+<script type=text/javascript> $LOCALE = "{{ locale }}";</script>
+<script type=text/javascript src="{{url_for('static', filename='jquery.min.js') }}"></script>
+<script type=text/javascript src="{{url_for('static', filename='leader.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='./font-awesome/css/font-awesome.min.css') }}">
+<script type=text/javascript src="{{url_for('static', filename='./leaflet/leaflet.js') }}"></script>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='./leaflet/leaflet.css') }}">
+<link rel="shortcut icon" type="image/x-icon" href="static/favicon-compass.ico">
+<body>
+<script>
+    $(document).ready(function () {
+
+        if ($LOCALE==="de_DE"){
+            $(".en").show();
+            $(".de").hide();
+        }
+        else if ($LOCALE==="en_US"){
+            $(".en").hide();
+            $(".de").show();
+        };
+    });
+
+    $(function() {
+        $('#zieltank').autocomplete({
+                source:function(request, response) {
+                    console.log(request.term)
+                    $.getJSON("{{ url_for("searchtank") }}",{
+                        word: request.term,
+                    }, function(data) {
+                        response(data.matching);
+                    });
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    console.log(ui.item.value);
+
+                }
+        });
+    });
+</script>
+  <div class="container">
+    <div class="col-1">
+        <p>
+      {{gettext('Route')}} <br> {{ form.zieltank }}
+      {{form.submit_route}}
+      </p>
+    </div>
+    <div class="col-2">
+      <div class="navi">
+        <div class="tableft">
+          <a title="Route" href="{{ url_for('route') }}" alt>
+            <i class="fa fa-car fa-4x"></i>
+          </a>
+        </div>
+        <div class="tabright">
+          <a title="Karte" href="{{ url_for('karte') }}">
+            <i class="fa fa-map fa-4x"></i>
+          </a>
+        </div>
+      </div>
+      <div class="content">
+        <div id="tankenMap" style="width:100%"></div>
+      </div>
+
+   	  <footer>
+          <a class="flag" >
+              <a class="de" title="German translation" onclick="change_locale('de')" href="" >
+                <IMG class="de" SRC="{{ url_for('static', filename='./flags/gerbw.png') }}" ALT="German translation" WIDTH=32 HEIGHT=32> </a>
+               <a class="en" title="English translation" onclick="change_locale('en')" href="" >
+                 <IMG class="en" SRC="{{ url_for('static', filename='./flags/engbw.png') }}" ALT="English translation" WIDTH=32 HEIGHT=32> </a>
+          </a>
+
+
+
+        <button id="impBtn">Impressum</button>
+          <div id="impressumModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>
+benzintech@gmx.de <br>
+Alexander Gohlke <br>
+Im Tiergarten 15 <br>
+57076 Siegen <br>
+015755298768 <br>
+                </p>
+             </div>
+          </div>
+        </footer>
+  </div>
+</div>
+<script>
+
+var tankenmap = L.map("tankenMap");
+L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}.{ext}', {
+ attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+ subdomains: 'abcd',
+ minZoom: 0,
+ maxZoom: 20,
+ ext: 'png'
+}).addTo(tankenmap);
+tankenmap.setView(new L.LatLng(51.373, 7.650), 13);
+
+
+
+var modal = document.getElementById('impressumModal');
+var impressum = document.getElementById("impBtn");
+var span = document.getElementsByClassName("close")[0];
+
+impBtn.onclick = function() {
+    modal.style.display = "block";
+
+}
+span.onclick = function() {
+    modal.style.display = "none";
+
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+</body>

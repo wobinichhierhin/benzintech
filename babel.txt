@@ -1,0 +1,38 @@
+pybabel extract -F ./Gui/babel.cfg -o ./Gui/messages.pot ./Gui/
+pybabel update -i ./Gui/messages.pot -d ./Gui/translations
+pybabel compile -d ./Gui/translations
+
+
+
+Cleanup:
+    def spritcheck(form, field):
+        if form.durchsprit.data is None or form.durchsprit.data == "" or form.durchsprit.data == "None":
+            raise ValidationError(gettext('Please enter the average fuel consumption'))
+        try:
+            float(form.durchsprit.data)
+        except ValueError:
+            raise ValidationError(gettext("The average fuel consumption needs to be an number"))
+        if float(form.durchsprit.data) <= 0:
+            raise ValidationError(gettext("The average fuel consumption needs to be bigger than zero"))
+
+
+    def tankcheck(form, field):
+        if form.maxtank.data is None or form.maxtank.data == "" or form.maxtank.data == "None":
+            raise ValidationError(gettext("Tankinhalt muss angegeben werden."))
+        try:
+            float(form.maxtank.data)
+        except ValueError:
+            raise ValidationError(gettext("Tankinhalt muss Zahl sein."))
+        if float(form.maxtank.data) <= 0:
+            raise ValidationError(gettext("Tankinhalt muss größer als 0 sein"))
+
+
+    durchsprit = StringField('Verbrauch',validators=[spritcheck])
+    maxtank = StringField('Tankinhalt', validators=[tankcheck])
+
+           <!--
+      <p>
+      {{gettext('Fuel capacity:')}} {{ form.maxtank }}
+      {{gettext('Fuel consumption(average):')}} {{ form.durchsprit }}
+      </p>
+       -->

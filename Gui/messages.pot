@@ -1,0 +1,39 @@
+# Translations template for PROJECT.
+# Copyright (C) 2017 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2017-12-12 10:40+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.5.1\n"
+
+#: Gui/templates/karte.html:17 Gui/templates/route.html:19
+msgid "Gas station(Start):"
+msgstr ""
+
+#: Gui/templates/karte.html:18 Gui/templates/route.html:20
+msgid "Gas station(End):"
+msgstr ""
+
+#: Gui/templates/karte.html:22 Gui/templates/route.html:24
+msgid "Fuel capacity:"
+msgstr ""
+
+#: Gui/templates/karte.html:23 Gui/templates/route.html:25
+msgid "Fuel consumption(average):"
+msgstr ""
+
+#: Gui/templates/route.html:11
+msgid "Date of travel:"
+msgstr ""
+
