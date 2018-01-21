@@ -2,16 +2,16 @@
 compile:
 g++ benzintech.cpp Station.h Station.cpp DriveRoute.h DriveRoute.cpp CalculateRoute.h CalculateRoute.cpp GasPrice.h GasPrice.cpp ToJson.h ToJson.cpp -std=c++11 -o benzintech
 
-aufruf des Programms:
+aufruf des Serers:
 
-./benzintech portnumber
-z.b. ./benzintech 8080
+./benzintech 
 
+Der Server ist dann über Port 8080 erreichbar.
 
-will man den "price" einer Tankstelle wissen, dann schickt man über den Port einen String der wie folgt aufgebaut ist:
+Will man den "price" einer Tankstelle wissen, dann schickt man über den Port einen String der wie folgt aufgebaut ist:
 price
 StatioNnumber
-Datum ab dem die 30 Taage kommen sollen
+Datum ab dem die 30 Tage vorhersage kommen sollen.
 
 ein Beispiel für die Tankstelle 3
 
@@ -19,7 +19,7 @@ ein Beispiel für die Tankstelle 3
 
 zurück kommt dann ein String mit:
 Laenge der Arrays
-ein Array mit der zeit
+ein Array mit der Zeiten
 ein Array mit den Preisen
 
 {
@@ -30,7 +30,7 @@ ein Array mit den Preisen
 
 ------------------------------------------------------------
 
-will man eine Route berechen, dann schckt man "route" und den Namen der Route
+Will man eine Route berechen, dann schickt man "route" und den Namen der Route
 Beispie:
 
 "route Bertha Benz Memorial Route.csv"
@@ -50,11 +50,12 @@ ein Array mit den zu Tankenden Littern
 "Litter": [0.788491, 0.002083, 0.960817, 0.000000, 0.000000, 0.395445, 0.000000, 0.107126, 3.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.287644, 0.179712, 1.656394, 0.000000, 0.000000, 1.179546, 0.544987, 0.400127, 0.250942, 0.176854, 0.174534, 2.534278, 0.059523, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
 }
 
+Und die Route wird als CSV Datei in Ausgabedaten gespeichert.
 
 
 ----------------------------------------------------------------
 Fehlerausgaben:
-schickt man was falsches an benzintech, dann können folgende fehlernachricten zurück kommen:
+schickt man was falsches an den Server, dann können folgende Fehlernachrichte zurück kommen:
 
 "error file" für nicht vorhandene Fahrzeugrouten
 return "error id" für nicht vorhandene Tankstellen
