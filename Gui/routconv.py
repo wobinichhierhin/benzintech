@@ -1,6 +1,5 @@
 import csv, sqlite3
 from os import listdir
-from os.path import isfile, join
 
 con = sqlite3.connect("./data/benzin.db")
 cur = con.cursor()

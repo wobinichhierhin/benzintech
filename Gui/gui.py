@@ -14,7 +14,7 @@ from uuid import uuid4
 import socket
 import json
 import matplotlib.dates as mdates
-
+import sqlite3
 
 app = Flask(__name__)
 LOCALE_LANG = 'de_DE'
@@ -94,6 +94,7 @@ class TestForm(Form):
     zieltank = StringField("ende")
     submit_route = SubmitField()
     submit_price = SubmitField()
+    import_route = SubmitField()
 
 def RoutenAuswahlFactory():
     db_session = DBSession()
@@ -114,6 +115,7 @@ class RouteForm(Form):
     start = datetime.datetime.strptime('2015-01-01 00:00:00', '%Y-%m-%d %H:%M:%S')
     submit_route = SubmitField()
     submit_price = SubmitField()
+    import_route = SubmitField()
     routenauswahl = QuerySelectField('Route', query_factory=RoutenAuswahlFactory,
                            get_pk=lambda a: a.RoutenID, get_label=lambda a: a.RoutenName)
     zieltank = StringField("ende")
@@ -155,15 +157,10 @@ def route():
     print(request.form)
     dataarray = {}
     if request.method == 'POST' and "submit_route" in request.form:
-
         db_session = DBSession()
         routenname_data = db_session.query(Routen).filter_by(RoutenID=request.form["routenauswahl"]).first()
         print(routenname_data)
         dataarray["routenname"] = routenname_data.RoutenName
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(('127.0.0.1', 8080))
-            s.sendall(str("route " + str(routenname_data.RoutenName)+str(".csv")).encode())
-            data = s.recv(4096)
         print(dataarray["routenname"])
         print("Hole Routendaten")
         data = db_session.query(Routendaten).filter_by(RoutenID=request.form["routenauswahl"]).order_by(Routendaten.Zeitpunkt.asc()).all()
@@ -189,15 +186,16 @@ def route():
                                          (tankstellen_daten.Lat, tankstellen_daten.Lon))
             benzinverbrauch = float(dist.kilometers)*float(5.6/100)
             if len(plotlist_y) == 0:
-                plotlist_x.append(data[data_i].Zeitpunkt)
+                plotlist_x.append(datetime.datetime.strftime(data[data_i].Zeitpunkt, "%Y-%m-%d %H:%M:%S"))
                 plotlist_y.append(data[data_i].Tankmenge)
                 print("Getankt:" + str(data[data_i].Tankmenge))
                 print("Tankinhalt:" + str(data[data_i].Tankmenge))
             else:
-                plotlist_x.append(data[data_i].Zeitpunkt)
+                plotlist_x.append(datetime.datetime.strftime(data[data_i].Zeitpunkt, "%Y-%m-%d %H:%M:%S"))
                 plotlist_y.append(plotlist_y[-1]-benzinverbrauch)
                 print("Verbraucht:" + str(benzinverbrauch))
-                plotlist_x.append(data[data_i].Zeitpunkt)
+
+                plotlist_x.append(datetime.datetime.strftime(data[data_i].Zeitpunkt, "%Y-%m-%d %H:%M:%S"))
                 plotlist_y.append(plotlist_y[-1]+data[data_i].Tankmenge)
                 print("Getankt:" + str(data[data_i].Tankmenge))
                 print("Tankinhalt:" + str(plotlist_y[-1]))
@@ -205,12 +203,16 @@ def route():
         filename = uuid4().hex
         print(plotlist_x[0])
         print(plotlist_x[-1])
-        ax = plt.axes()
-        days = mdates.DayLocator()
-        hours = mdates.HourLocator()
-        ax.xaxis.set_major_locator(days)
-        ax.xaxis.set_minor_locator(hours)
+        print(len(plotlist_x))
         plt.plot(plotlist_x, plotlist_y)
+        ax = plt.gca()  # grab the current axis
+        ax.set_xticks([0, (len(plotlist_x)-1)/2])  # choose which x locations to have ticks
+        ax.set_xticklabels([plotlist_x[0], plotlist_x[-1]])  # set the labels to display at those ticks
+        #plt.setp(plt.gca().xaxis.get_majorticklabels(),
+         #        'rotation', 90)
+        plt.xlabel("Zeit")
+        plt.ylabel("Tankinhalt")
+
         plt.savefig('./static/images/' + filename + '.png')
         dataarray['imagename'] = filename
         dataarray['stoplist'] = stoplist
@@ -229,12 +231,12 @@ def route():
         #print(week_dict)
 
         #for i in range(7):
-
+            
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(('127.0.0.1', 8080))
             s.sendall(str("price " + str(request.form["tankid"]) + ";" + str(request.form["date"]) + " 00:00:00+00").encode())
-            data = s.recv(4096)
+            data = s.recv(1024)
         data_json = json.loads(data.decode("ascii"))
         data_x = data_json["Time"]
         data_y = data_json["Preis"]
@@ -242,15 +244,44 @@ def route():
         plt.clf()
         plt.cla()
 
-        ax = plt.axes()
-        month = mdates.MonthLocator()
-        days = mdates.DayLocator()
-        ax.xaxis.set_major_locator(month)
-        ax.xaxis.set_minor_locator(days)
         plt.plot(data_x, data_y)
+        ax = plt.gca()  # grab the current axis
+        ax.set_xticks([0, (len(data_x)-1)])  # choose which x locations to have ticks
+        ax.set_xticklabels([data_x[0], data_x[-1]])  # set the labels to display at those ticks
+        plt.xlabel("Zeit")
+        plt.ylabel("Preis")
         plt.savefig('./static/images/' + filename + '.png')
         dataarray['imagename'] = filename
-
+    elif request.method == 'POST' and "import_route" in request.form:
+        onlyfiles = [f for f in os.listdir("../Eingabedaten/Fahrzeugrouten")]
+        print(onlyfiles)
+        con = sqlite3.connect("./data/benzin.db")
+        cur = con.cursor()
+        for entry in onlyfiles:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect(('127.0.0.1', 8080))
+                s.sendall(str("route " + str(entry)).encode())
+                data = s.recv(1024)
+                print(data)
+            data_json = json.loads(data.decode("ascii"))
+            cur.execute("SELECT RoutenName FROM Routen WHERE RoutenName = ?", (entry[:-4],))
+            data = cur.fetchall()
+            if len(data) == 0:
+                cur.execute("INSERT INTO Routen (RoutenName) VALUES (?)", (entry[:-4],))
+            else:
+                break
+            con.commit()
+            cur.execute("SELECT * FROM Routen WHERE RoutenName = ?", (entry[:-4],))
+            data = cur.fetchall()
+            insid = data[0][0]
+            to_db = []
+            for i in range(int(data_json["Laenge"])):
+                to_db.append((data_json["Time"][i], data_json["ID"][i], data_json["Preis"][i], data_json["Litter"][i], insid))
+            cur.executemany(
+                "INSERT INTO Routendaten (Zeitpunkt, TankstellenID, Preis, Tankmenge, RoutenID) VALUES (?, ?, ?, ?, ?);",
+                to_db)
+            con.commit()
+        con.close()
     return render_template("route.html", form=form, today=form.start, in30=form.in30, locale=session['locale'], dataarray=dataarray)
 
 @app.route("/change_locale")
@@ -280,3 +311,5 @@ if __name__ == '__main__':
     app.secret_key = os.urandom(24)
 
     app.run(host="0.0.0.0", port=80)
+
+
